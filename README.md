@@ -10,6 +10,7 @@ Znajduje się tam plik ProjektGRA.exe
 > Otwieranie projektu w Visual Studio i podłączanie bibliotek:
 
 > Uruchamianie w Visual Studio 2022.
+
 Kliknij "Otwórz projekt lub rozwiązanie".
 Wskaż plik .sln w folderze Gry i kliknij "Otwórz".
 Podłączenie bibliotek SDL2 (jeśli są w tym samym folderze co projekt)

@@ -7,7 +7,7 @@ Pobierz wszystkie pliki z github-a i je rozpakuj. Powinny znajdować się w tym 
 
 Znajduje się tam plik ProjektGRA.exe
 
->> Otwieranie projektu w Visual Studio i podłączanie bibliotek:
+> Otwieranie projektu w Visual Studio i podłączanie bibliotek:
 
 Uruchamianie w Visual Studio 2022.
 Kliknij "Otwórz projekt lub rozwiązanie".

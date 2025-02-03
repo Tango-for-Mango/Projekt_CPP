@@ -1,0 +1,84 @@
+﻿#include <SDL.h>
+#include <vector>
+
+const int WIDTH = 800;
+const int HEIGHT = 600;
+
+struct Tower {
+    int x, y, width, height;
+    bool selected;
+
+    Tower(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), selected(false) {}
+
+    void draw(SDL_Renderer* renderer) {
+        SDL_SetRenderDrawColor(renderer, 150, 75, 0, 255);
+        SDL_Rect towerRect = { x, y, width, height };
+        SDL_RenderFillRect(renderer, &towerRect);
+
+        SDL_SetRenderDrawColor(renderer, 120, 60, 0, 255);
+        int blankWidth = width / 6;
+        int blankHeight = height / 8;
+        for (int i = 0; i < 6; i += 2) {
+            SDL_Rect blankRect = { x + i * blankWidth, y - blankHeight, blankWidth, blankHeight };
+            SDL_RenderFillRect(renderer, &blankRect);
+        }
+
+        SDL_SetRenderDrawColor(renderer, selected ? 255 : 0, 0, 0, 255);
+        SDL_RenderDrawRect(renderer, &towerRect);
+    }
+};
+
+Tower* selectedTower = nullptr;
+void handleTowerClick(int mouseX, int mouseY, std::vector<Tower>& towers) {
+    for (Tower& tower : towers) {
+        if (mouseX >= tower.x && mouseX <= tower.x + tower.width &&
+            mouseY >= tower.y && mouseY <= tower.y + tower.height) {
+            if (selectedTower) selectedTower->selected = false;
+            selectedTower = &tower;
+            tower.selected = true;
+            return;
+        }
+    }
+    if (selectedTower) {
+        selectedTower->x = mouseX - selectedTower->width / 2;
+        selectedTower->y = mouseY - selectedTower->height / 2;
+        selectedTower->selected = false;
+        selectedTower = nullptr;
+    }
+}
+
+int main(int argc, char* argv[]) {
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Window* window = SDL_CreateWindow("Wieża", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    std::vector<Tower> towers = {
+        {200, 200, 100, 200},
+        {400, 200, 100, 200},
+        {600, 200, 100, 200}
+    };
+
+    SDL_Event event;
+    bool running = true;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                handleTowerClick(event.button.x, event.button.y, towers);
+            }
+        }
+        SDL_SetRenderDrawColor(renderer, 135, 206, 235, 255);
+        SDL_RenderClear(renderer);
+        for (Tower& tower : towers) {
+            tower.draw(renderer);
+        }
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
+}
